@@ -1,0 +1,58 @@
+// Fonts
+@import url("https://fonts.googleapis.com/css?family=Nunito");
+
+@import "~admin-lte/dist/css/adminlte.css";
+// Variables
+@import "variables";
+
+//Toastr
+@import "~toastr/build/toastr.css";
+
+// Main Style
+html {
+  font-size: 100% !important; //Fix vue-invoice font probleme
+}
+a {
+  text-decoration: none !important;
+}
+aside {
+  position: fixed !important;
+}
+.content .card {
+  margin-left: 0 !important;
+}
+.modal {
+  overflow: auto !important;
+}
+.invalid-feedback {
+  display: block !important;
+  font-size: 90% !important;
+  font-weight: 500 !important;
+}
+.lockscreen-name {
+  font-weight: 600;
+  text-align: center;
+}
+.text-left{
+  >button{
+    margin-top: 6px;
+  }
+}
+tbody .btn{
+  width: max-content;
+}
+@media only screen and (max-width:700px) {
+  body{
+    font-size: 14px;
+  }
+}
+@media only screen and (max-width:560px) {
+  body{
+    font-size: 13px;
+  }
+}
+
+//For collapse probleme (use new close button)
+/*.sidebar-collapse .main-sidebar, .sidebar-collapse .main-sidebar::before {
+  margin-left: -250px;
+}*/
