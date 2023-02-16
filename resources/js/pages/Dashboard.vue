@@ -279,14 +279,6 @@ export default {
   methods: {
     getCommandes() {
       axios
-        .get("/api/commandes?page=0&type=vente")
-        .then((res) => {
-          this.commandes.ventes = res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-      axios
         .get("/api/commandes?page=0&type=achat")
         .then((res) => {
           this.commandes.achats = res.data;
@@ -294,6 +286,16 @@ export default {
         .catch((err) => {
           console.log(err);
         });
+      axios
+        .get("/api/commandes?page=0&type=vente")
+        .then((res) => {
+          this.commandes.ventes = res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+
     },
     getDaySales() {
       axios
@@ -322,7 +324,7 @@ export default {
       axios
         .get(`/api/commandes/total/vente?annee=${this.now.getFullYear()}`)
         .then((res) => {
-          if (res.data[0].total != null) this.ventes = res.data[0].total;
+          this.ventes = res.data[0].total || 0;
         })
         .catch((err) => {
           console.log(err);
@@ -332,7 +334,7 @@ export default {
       axios
         .get(`/api/commandes/total/achat?annee=${this.now.getFullYear()}`)
         .then((res) => {
-          this.achats = res.data[0].total;
+          this.achats = res.data[0].total || 0;
         })
         .catch((err) => {
           console.log(err);

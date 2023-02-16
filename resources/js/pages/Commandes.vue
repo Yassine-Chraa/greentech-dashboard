@@ -28,12 +28,24 @@
                 </div>
                 <div class="col-md-6">
                   <label>La date de la commande</label>
-                  <input
-                    type="date"
-                    class="form-control"
-                    v-model="commandeDate"
-                    @change="getCommandes('/api/commandes?page=1')"
-                  />
+                  <div class="row">
+                    <input
+                      type="date"
+                      class="form-control col"
+                      v-model="commandeDate"
+                      @change="getCommandes('/api/commandes?page=1')"
+                    />
+                      <button
+                        type="button"
+                        class="btn btn-default"
+                        @click="
+                          commandeDate = '';
+                          getCommandes();
+                        "
+                      >
+                        <i class="fa fa-close"></i>
+                      </button>
+                  </div>
                 </div>
                 <div class="col-md-6">
                   <label>Sort Order</label>
@@ -68,7 +80,7 @@
                     <input
                       type="search"
                       class="form-control form-control-lg"
-                      placeholder="Tapez le nom de client"
+                      :placeholder="`Tapez le nom de ${commandeType == 'achat'?'Fournisseur':'Client'}`"
                       v-model="keyword"
                     />
                     <div class="input-group-append">
@@ -338,7 +350,7 @@
                     <th>Prix Unitair</th>
                     <th>Quantite</th>
                     <th>Montant</th>
-                    <th v-if="width>560">Outils</th>
+                    <th v-if="width > 560">Outils</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -356,7 +368,7 @@
                         ).toFixed(2)
                       }}
                     </td>
-                    <td v-if="width>560" class="text-left mt-1">
+                    <td v-if="width > 560" class="text-left mt-1">
                       <button
                         type="button"
                         class="btn btn-info btn-sm"
@@ -565,7 +577,7 @@
       :enable-download="true"
       :preview-modal="false"
       :paginate-elements-by-height="1100"
-      :filename="'facture_N'+commandeId+'/'+date.substr(0,4)"
+      :filename="'facture_N' + commandeId + '/' + date.substr(0, 4)"
       :pdf-quality="2"
       :manual-pagination="false"
       pdf-format="a4"
@@ -725,12 +737,7 @@ export default {
         this.commandeProduitForm = { id, nom, prix, quantite };
       }
     },
-    executeAction(
-      action,
-      id = null,
-      nom = null,
-      fournisseur = null,
-    ) {
+    executeAction(action, id = null, nom = null, fournisseur = null) {
       switch (action) {
         case "voir":
           axios
@@ -740,7 +747,8 @@ export default {
               this.commandeId = id;
               this.client = nom;
               this.fournisseur = fournisseur;
-              if(this.commandeProduits.length != 0)this.date = this.commandeProduits[0].date;
+              if (this.commandeProduits.length != 0)
+                this.date = this.commandeProduits[0].date;
               this.calcTotal(res.data);
             })
             .catch((err) => {

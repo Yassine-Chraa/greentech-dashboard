@@ -14,5 +14,8 @@ try {
 window.axios = require("axios");
 
 window.axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
+window.axios.defaults.headers.common[
+  "authorization"
+] = `Bearer ${localStorage.getItem("api_token")}`;
 
-window.toastr = require('toastr');
+window.toastr = require("toastr");

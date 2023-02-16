@@ -4,7 +4,7 @@
     <div class="content" v-if="$attrs.isadmin == 1">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-md-11" style="margin: auto; max-width: 675px">
+          <div class="col-md-11">
             <div class="card">
               <div class="card-header">
                 <h3 class="card-title">Utilisateurs</h3>

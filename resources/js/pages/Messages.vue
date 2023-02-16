@@ -236,6 +236,8 @@ export default {
         )
         .then((res) => {
           this.messages = res.data.data;
+           this.links = res.data.links;
+          this.handlePagination();
         })
         .catch((err) => {
           console.log(err);

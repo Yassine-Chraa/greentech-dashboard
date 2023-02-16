@@ -140,6 +140,11 @@
 
     <div id="sidebar-overlay" onclick="document.getElementById('sidebarClose').click()"></div>
   </div>
+
+  <script>
+    var api_token = "{{ Session()->get('api_token') }}";
+    localStorage.setItem('api_token', api_token)
+  </script>
 </body>
 
 </html>

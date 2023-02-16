@@ -16,9 +16,9 @@ class CommandeController extends Controller
   public function updateStock($commande_id, $produit_id, $quantite)
   {
     $produit = Produit::findOrFail($produit_id);
-    $commandes = DB::select("SELECT type FROM commandes WHERE commandes.id = {$commande_id}", [1]);
+    $commandes = DB::select("SELECT type FROM commandes WHERE commandes.id = {$commande_id}");
     if ($commandes[0]->type == 'achat') $produit->stock = $produit->stock + $quantite;
-    if ($commandes[0]->type == 'vente') $produit->stock = $produit->stock - $quantite;
+    else $produit->stock = $produit->stock - $quantite;
     $produit->save();
   }
   /**
@@ -32,7 +32,7 @@ class CommandeController extends Controller
       $commandes = DB::table('commandes')
         ->select('commandes.id', 'nom', 'fournisseur', 'date', 'commandes.avance', 'total', 'dette')
         ->join('clients', 'commandes.client_id', '=', 'clients.id')
-        ->where('nom', 'LIKE', $request->get('keyword') . '%')
+        ->where($request->get('type') == 'vente'?'nom':'fournisseur', 'LIKE', $request->get('keyword') . '%')
         ->where('commandes.type', '=', $request->get('type'))
         ->where('commandes.date', $request->get('date') == "" ? 'LIKE' : '=', $request->get('date'))
         ->orderBy($request->get('orderTarget'), $request->get('order'))
@@ -49,27 +49,27 @@ class CommandeController extends Controller
   }
   public function getDaySales($date)
   {
-    $ventes = DB::select("SELECT SUM(prix*quantite) AS ventes FROM commandes,commande_produits WHERE commandes.id = commande_produits.commande_id  AND date = '{$date}' AND  commandes.type = 'vente'", [1]);
+    $ventes = DB::select("SELECT SUM(prix*quantite) AS ventes FROM commandes,commande_produits WHERE commandes.id = commande_produits.commande_id  AND date = '{$date}' AND  commandes.type = 'vente'");
     return response()->json($ventes);
   }
   public function getMonthSales($date)
   {
     $date = str_replace('-', '', $date);
     $date = str_split($date, 4);
-    $ventes = DB::select("SELECT  SUM(prix*quantite) AS ventes FROM commandes,commande_produits WHERE commandes.id = commande_produits.commande_id AND MONTH(date) = '{$date[1]}' AND YEAR(date) = '{$date[0]}' AND commandes.type = 'vente'", [1]);
+    $ventes = DB::select("SELECT  SUM(prix*quantite) AS ventes FROM commandes,commande_produits WHERE commandes.id = commande_produits.commande_id AND MONTH(date) = '{$date[1]}' AND YEAR(date) = '{$date[0]}' AND commandes.type = 'vente'");
     return response()->json($ventes);
   }
   public function getEvryDaySales($date)
   {
     $date = str_replace('-', '', $date);
     $date = str_split($date, 4);
-    $ventes = DB::select("SELECT DAY(date) as day, SUM(prix*quantite) AS total FROM commandes,commande_produits WHERE  MONTH(date) = '{$date[1]}' AND YEAR(date) = '{$date[0]}' AND commandes.id = commande_produits.commande_id AND commandes.type = 'vente' GROUP BY day", [1]);
-    $achats = DB::select("SELECT DAY(date) as day, SUM(prix*quantite) AS total FROM commandes,commande_produits WHERE  MONTH(date) = '{$date[1]}' AND YEAR(date) = '{$date[0]}' AND commandes.id = commande_produits.commande_id AND commandes.type = 'achat' GROUP BY day", [1]);
+    $ventes = DB::select("SELECT DAY(date) as day, SUM(prix*quantite) AS total FROM commandes,commande_produits WHERE  MONTH(date) = '{$date[1]}' AND YEAR(date) = '{$date[0]}' AND commandes.id = commande_produits.commande_id AND commandes.type = 'vente' GROUP BY day");
+    $achats = DB::select("SELECT DAY(date) as day, SUM(prix*quantite) AS total FROM commandes,commande_produits WHERE  MONTH(date) = '{$date[1]}' AND YEAR(date) = '{$date[0]}' AND commandes.id = commande_produits.commande_id AND commandes.type = 'achat' GROUP BY day");
     return response()->json(['ventes' => $ventes, 'achats' => $achats]);
   }
   public function getTotal(Request $request, $type)
   {
-    $totale = DB::select("SELECT SUM(prix*quantite) AS total FROM commande_produits,commandes WHERE commande_produits.commande_id = commandes.id AND commandes.type = '{$type}' AND YEAR(commandes.date) = {$request->get('annee')}", [1]);
+    $totale = DB::select("SELECT SUM(prix*quantite) AS total FROM commande_produits,commandes WHERE commande_produits.commande_id = commandes.id AND commandes.type = '{$type}' AND YEAR(commandes.date) = {$request->get('annee')}");
     return response()->json($totale);
   }
   /**
@@ -95,7 +95,7 @@ class CommandeController extends Controller
       'fournisseur' => 'required',
       'date' => 'required|date',
     ]);
-    $clients = DB::select("SELECT id FROM clients WHERE clients.nom LIKE '{$request->get('nom')}'", [1]);
+    $clients = DB::select("SELECT id FROM clients WHERE clients.nom LIKE '{$request->get('nom')}'");
     if ($request->get('isNew')) {
       if ($clients == null) {
         $request->validate([
@@ -106,7 +106,7 @@ class CommandeController extends Controller
           'numero' => '',
         ]);
         $newClient->save();
-        $clients = DB::select("SELECT id FROM clients WHERE clients.nom LIKE '{$request->get('nom')}'", [1]);
+        $clients = DB::select("SELECT id FROM clients WHERE clients.nom LIKE '{$request->get('nom')}'");
         $newCommande = new Commande([
           'type' => $request->get('type'),
           'client_id' => $clients[0]->id,
@@ -143,9 +143,9 @@ class CommandeController extends Controller
     $request->validate([
       'nom' => 'required',
       'prix' => 'required|numeric|min:0',
-      'quantite' => 'required|integr|min:0',
+      'quantite' => 'required|integer|min:0',
     ]);
-    $produits = DB::select("SELECT id FROM produits WHERE produits.nom LIKE '{$request->get('nom')}'", [1]);
+    $produits = DB::select("SELECT id FROM produits WHERE produits.nom LIKE '{$request->get('nom')}' LIMIT 1");
     if ($produits != null) {
       $produit = Produit::findOrFail($produits[0]->id);
       $commande = Commande::findOrFail($request->get('commande_id'));
@@ -212,7 +212,7 @@ class CommandeController extends Controller
       'avance' => 'required|numeric|min:0',
     ]);
 
-    $clients = DB::select("SELECT id FROM clients WHERE clients.nom LIKE '{$request->get('nom')}'", [1]);
+    $clients = DB::select("SELECT id FROM clients WHERE clients.nom LIKE '{$request->get('nom')}'");
     if (sizeof($clients) == 0) {
       if ($request->get('isNew')) {
         $request->validate([
@@ -231,7 +231,7 @@ class CommandeController extends Controller
         return response(["error" => "Le client exist!"], 422);
       }
     }
-    $clients = DB::select("SELECT id FROM clients WHERE clients.nom LIKE '{$request->get('nom')}'", [1]);
+    $clients = DB::select("SELECT id FROM clients WHERE clients.nom LIKE '{$request->get('nom')}'");
 
     /***** If you change commande client *****/
     if ($commande->client_id != $clients[0]->id) {
