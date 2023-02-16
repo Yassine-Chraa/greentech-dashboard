@@ -16,15 +16,15 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-  if(Auth::user() === null)return view('auth.login');
+  if (Auth::user() === null) return view('auth.login');
   else return redirect('home');
-})->middleware('auth');
+})->middleware(['auth', 'auth:sanctum']);
 
 Auth::routes(['register' => false]);
 
 Route::get('/home', function () {
   return view('home');
-})->middleware(['lock', 'auth'])->name('home');
-Route::get('/lockScreen', [LockScreenController::class, 'get'])->middleware('auth');
-Route::post('/lockScreen', [LockScreenController::class, 'post'])->middleware('auth');
-Route::get('/{any}', [App\Http\Controllers\HomeController::class, 'index'])->where('any', '.*')->middleware(['auth', 'lock']);
+})->middleware(['lock', 'auth', 'auth:sanctum'])->name('home');
+Route::get('/lockScreen', [LockScreenController::class, 'get'])->middleware(['auth', 'auth:sanctum']);
+Route::post('/lockScreen', [LockScreenController::class, 'post'])->middleware(['auth', 'auth:sanctum']);
+Route::get('/{any}', [App\Http\Controllers\HomeController::class, 'index'])->where('any', '.*')->middleware(['auth', 'lock', 'auth:sanctum']);
