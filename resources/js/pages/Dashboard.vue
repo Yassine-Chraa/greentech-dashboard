@@ -81,7 +81,12 @@
                             data-toggle="modal"
                             data-target="#invoice"
                             @click="
-                              executeAction('voir', commande.id, commande.nom,commande.fournisseur)
+                              executeAction(
+                                'voir',
+                                commande.id,
+                                commande.nom,
+                                commande.fournisseur
+                              )
                             "
                           >
                             <i class="fa-solid fa-eye"></i>
@@ -93,7 +98,7 @@
                   </table>
                 </div>
               </div>
-              <div class="card-footer clearfix" v-if="$attrs.isadmin">
+              <div class="card-footer clearfix" v-if="showButton">
                 <router-link
                   to="/commandes"
                   class="btn btn-sm btn-secondary float-right"
@@ -153,7 +158,12 @@
                             data-toggle="modal"
                             data-target="#invoice"
                             @click="
-                              executeAction('voir', commande.id, commande.nom,commande.fournisseur)
+                              executeAction(
+                                'voir',
+                                commande.id,
+                                commande.nom,
+                                commande.fournisseur
+                              )
                             "
                           >
                             <i class="fa-solid fa-eye"></i>
@@ -165,7 +175,7 @@
                   </table>
                 </div>
               </div>
-              <div class="card-footer clearfix" v-if="$attrs.isadmin">
+              <div class="card-footer clearfix" v-if="showButton">
                 <router-link
                   to="/commandes"
                   class="btn btn-sm btn-secondary float-right"
@@ -224,7 +234,7 @@
       :enable-download="true"
       :preview-modal="false"
       :paginate-elements-by-height="1100"
-      :filename="'facture_N'+commandeId+'/'+date.substr(0,4)"
+      :filename="'facture_N' + commandeId + '/' + date.substr(0, 4)"
       :pdf-quality="2"
       :manual-pagination="false"
       pdf-format="a4"
@@ -269,6 +279,7 @@ export default {
       fournisseur: "",
       date: "",
       now: new Date(),
+      showButton: false,
     };
   },
   components: {
@@ -294,14 +305,10 @@ export default {
         .catch((err) => {
           console.log(err);
         });
-
-
     },
     getDaySales() {
       axios
-        .get(
-          `/api/commandes/daySales/${this.now.toISOString().split("T")[0]}`
-        )
+        .get(`/api/commandes/daySales/${this.now.toISOString().split("T")[0]}`)
         .then((res) => {
           if (res.data[0].ventes != null) this.daySales = res.data[0].ventes;
         })
@@ -312,7 +319,9 @@ export default {
     getMonthSales() {
       let month = this.now.getMonth() + 1;
       axios
-        .get(`/api/commandes/monthSales/${this.now.getFullYear() + "-" + month}`)
+        .get(
+          `/api/commandes/monthSales/${this.now.getFullYear() + "-" + month}`
+        )
         .then((res) => {
           if (res.data[0].ventes != null) this.monthSales = res.data[0].ventes;
         })
@@ -346,7 +355,12 @@ export default {
         this.total += ele.prix * ele.quantite;
       });
     },
-    executeAction(action, id = undefined, name = undefined, fournisseur=undefined) {
+    executeAction(
+      action,
+      id = undefined,
+      name = undefined,
+      fournisseur = undefined
+    ) {
       switch (action) {
         case "voir":
           axios
@@ -356,7 +370,8 @@ export default {
               this.commandeId = id;
               this.clientName = name;
               this.fournisseur = fournisseur;
-              if(this.commandeProduits.length != 0)this.date = this.commandeProduits[0].date;
+              if (this.commandeProduits.length != 0)
+                this.date = this.commandeProduits[0].date;
               this.calcTotal(res.data);
             })
             .catch((err) => {
@@ -377,6 +392,8 @@ export default {
     this.getVentes();
     this.getAchats();
     this.getCommandes();
+    console.log(this.$attrs.isadmin);
+    this.showButton = $attrs.isadmin == "0";
   },
 };
 </script>

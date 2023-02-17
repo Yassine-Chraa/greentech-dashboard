@@ -61,8 +61,14 @@ class LoginController extends Controller
       }
 
       //Generate user token
-      $token = $request->user()->createToken("api_token")->plainTextToken;
+      if($request->user()->isAdmin == 1){
+        $token = $request->user()->createToken("api_token",['manage-dashboard'])->plainTextToken;
+
+      }else{
+        $token = $request->user()->createToken("api_token",[])->plainTextToken;
+      }
       $request->session()->put('api_token', $token);
+
 
       return $this->sendLoginResponse($request);
     }

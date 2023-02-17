@@ -4661,6 +4661,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -4682,7 +4692,8 @@ __webpack_require__.r(__webpack_exports__);
       clientName: "",
       fournisseur: "",
       date: "",
-      now: new Date()
+      now: new Date(),
+      showButton: false
     };
   },
   components: {
@@ -4786,6 +4797,8 @@ __webpack_require__.r(__webpack_exports__);
     this.getVentes();
     this.getAchats();
     this.getCommandes();
+    console.log(this.$attrs.isadmin);
+    this.showButton = $attrs.isadmin == "0";
   }
 });
 
@@ -58696,7 +58709,7 @@ var render = function () {
                     ]),
                   ]),
                   _vm._v(" "),
-                  _vm.$attrs.isadmin
+                  _vm.showButton
                     ? _c(
                         "div",
                         { staticClass: "card-footer clearfix" },
@@ -58785,7 +58798,7 @@ var render = function () {
                     ]),
                   ]),
                   _vm._v(" "),
-                  _vm.$attrs.isadmin
+                  _vm.showButton
                     ? _c(
                         "div",
                         { staticClass: "card-footer clearfix" },
