@@ -392,8 +392,6 @@ export default {
     this.getVentes();
     this.getAchats();
     this.getCommandes();
-    console.log(this.$attrs.isadmin);
-    this.showButton = $attrs.isadmin == "0";
   },
 };
 </script>

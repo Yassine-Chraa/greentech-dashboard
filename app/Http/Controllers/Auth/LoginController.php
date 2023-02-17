@@ -60,7 +60,10 @@ class LoginController extends Controller
         $request->session()->put('auth.password_confirmed_at', time());
       }
 
-      //Generate user token
+
+
+      //Delete user tokens and generate new token
+      $request->user()->tokens()->delete();
       if($request->user()->isAdmin == 1){
         $token = $request->user()->createToken("api_token",['manage-dashboard'])->plainTextToken;
 
