@@ -223,7 +223,6 @@
                     justify-content: right;
                     margin-bottom: 0;
                     padding-top: 15px;
-                    cursor: pointer;
                   "
                 >
                   <li :class="prevClass" @click="getCommandes(links[0].url)">
@@ -262,8 +261,8 @@
       </div>
     </div>
     <div class="modal fade" id="modal-default" aria-hidden="true">
-      <div class="modal-dialog" style="max-width: 680px">
-        <div class="modal-content">
+      <div class="modal-dialog modal-dialog-scrollable" style="max-width: 680px">
+        <div class="modal-content" style="overflow-y: scroll;">
           <div class="modal-header">
             <h4 class="modal-title">Commande</h4>
             <button
@@ -911,6 +910,9 @@ export default {
   width: 100%;
 }
 .pagination {
+  li{
+    cursor: pointer;
+  }
   > li:first-child,
   > li:last-child {
     font-weight: 600;

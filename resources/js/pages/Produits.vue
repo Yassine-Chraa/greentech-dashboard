@@ -126,7 +126,6 @@
                     justify-content: right;
                     margin-bottom: 0;
                     padding-top: 15px;
-                    cursor: pointer;
                   "
                 >
                   <li :class="prevClass" @click="getProduit(links[0].url)">
@@ -434,14 +433,5 @@ export default {
 }
 .card {
   width: 100%;
-}
-.pagination {
-  > li:first-child,
-  > li:last-child {
-    font-weight: 600;
-  }
-  .page-item.disabled .page-link {
-    color: #8d9399;
-  }
 }
 </style>

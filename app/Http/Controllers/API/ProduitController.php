@@ -113,7 +113,7 @@ class ProduitController extends Controller
     $request->validate([
       'nom' => 'required',
       'prix' => 'required|numeric|min:0',
-      'stock' => 'required|integer|min:0',
+      'stock' => 'required|numeric|min:0',
     ]);
 
     $produit->nom = $request->get('nom');

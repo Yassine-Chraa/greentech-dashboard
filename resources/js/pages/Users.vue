@@ -414,13 +414,4 @@ export default {
 .card {
   width: 100%;
 }
-.pagination {
-  > li:first-child,
-  > li:last-child {
-    font-weight: 600;
-  }
-  .page-item.disabled .page-link {
-    color: #8d9399;
-  }
-}
 </style>

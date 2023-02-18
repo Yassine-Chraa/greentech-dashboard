@@ -267,7 +267,7 @@ class CommandeController extends Controller
     if ($commande->type == 'achat' ||  $request->get('quantite') - $commandeProduit->quantite <= $produit->stock) {
       $request->validate([
         'prix' => 'required|numeric|min:0',
-        'quantite' => 'required|integr|min:0',
+        'quantite' => 'required|integer|min:0',
       ]);
 
       $commandeProduit->prix = $request->get('prix');
