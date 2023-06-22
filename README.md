@@ -45,7 +45,7 @@
 
 ## :dart: About ##
 
-Describe your project
+This is a dashboard that help to manage stocks and sales.
 
 ## :sparkles: Features ##
 ## :rocket: Technologies ##
